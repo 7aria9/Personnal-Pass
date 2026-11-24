@@ -10,7 +10,8 @@ Gestionnaire de mots de passe personnel pour Windows, réécrit en C# (WPF, .NET
 - **Ajout, modification, suppression** d'enregistrements.
 - **Générateur** de mots de passe de 8 à 32 caractères : majuscules, minuscules, chiffres, caractères spéciaux
   (au moins un caractère de chaque famille cochée est garanti).
-- **Copie** de l'identifiant / du mot de passe : le presse-papiers est vidé après 30 s et exclu de l'historique Windows (Win+V).
+- **Copie par clic droit** sur l'identifiant ou le mot de passe dans la liste (ou via les boutons de la ligne). Le mot de passe
+  est effacé du presse-papiers après 30 s, et rien n'est conservé dans l'historique Windows (Win+V).
 - **Verrouillage automatique** après 5 minutes d'inactivité ou au verrouillage de la session Windows (Ctrl+L pour verrouiller).
 - **Liaison au processeur** : le coffre ne s'ouvre que sur la machine qui l'a créé.
 - **Kit de récupération** (fichier + code) pour rouvrir le coffre après un changement de matériel ou un oubli du mot de passe.

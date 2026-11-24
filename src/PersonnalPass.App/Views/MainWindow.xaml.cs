@@ -129,6 +129,36 @@ public partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// Clic droit sur une cellule « Identifiant » ou « Mot de passe » : copie directe de la valeur,
+    /// comme dans l'ancienne version WinDev.
+    /// </summary>
+    private void Grid_RightClick(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is not DependencyObject source) return;
+        var cell = FindParent<DataGridCell>(source);
+        if (cell?.DataContext is not VaultEntry entry) return;
+
+        if (cell.Column == LoginColumn)
+            Copy(entry.Login, "Identifiant");
+        else if (cell.Column == PasswordColumn)
+            Copy(entry.Password, "Mot de passe");
+        else
+            return;
+
+        EntriesGrid.SelectedItem = entry;
+        e.Handled = true;
+    }
+
+    private static T? FindParent<T>(DependencyObject? element) where T : DependencyObject
+    {
+        while (element is not null and not T)
+            element = element is System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D
+                ? System.Windows.Media.VisualTreeHelper.GetParent(element)
+                : LogicalTreeHelper.GetParent(element);
+        return element as T;
+    }
+
     private void Edit(VaultEntry? entry)
     {
         if (entry is null) return;
@@ -161,9 +191,13 @@ public partial class MainWindow : Window
     private void Copy(string? value, string what)
     {
         if (string.IsNullOrEmpty(value)) return;
-        StatusText.Text = SecureClipboard.Copy(value)
-            ? $"{what} copié. Le presse-papiers sera vidé dans {SecureClipboard.ClearDelay.TotalSeconds:0} secondes."
-            : "Le presse-papiers est occupé, réessayez.";
+        var isPassword = what == "Mot de passe";
+        if (!SecureClipboard.Copy(value, autoClear: isPassword))
+            StatusText.Text = "Le presse-papiers est occupé, réessayez.";
+        else
+            StatusText.Text = isPassword
+                ? $"Mot de passe copié. Le presse-papiers sera vidé dans {SecureClipboard.ClearDelay.TotalSeconds:0} secondes."
+                : $"{what} copié dans le presse-papiers.";
     }
 
     private static VaultEntry? EntryFrom(object sender) => (sender as FrameworkElement)?.DataContext as VaultEntry;
