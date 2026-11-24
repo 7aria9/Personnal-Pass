@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Importer depuis un fichier CSV"
         Width="820" Height="600" MinWidth="600" MinHeight="420"
-        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="{StaticResource Bg}" Foreground="{StaticResource Text}" FontFamily="Segoe UI">
     <Grid Margin="24,20,24,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -14,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <TextBlock Text="Importer des enregistrements" FontSize="22" FontWeight="SemiBold" />
+            <TextBlock Text="Importer des enregistrements" FontSize="20" FontWeight="Bold" />
             <TextBlock Style="{StaticResource HintText}" Margin="0,4,0,12"
                        Text="Fichier CSV avec les colonnes Nom, Identifiant, Mot de passe (dans cet ordre, ou avec une ligne d'en-têtes). Séparateur « ; », « , » ou tabulation." />
         </StackPanel>
@@ -25,7 +26,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="FileBox" IsReadOnly="True" />
-            <Button Grid.Column="1" Content="Choisir le fichier…" Margin="8,0,0,0" Padding="14,6" Click="Browse_Click" />
+            <Button Grid.Column="1" Content="📂  Choisir le fichier…" Margin="8,0,0,0" Click="Browse_Click" />
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0,12,0,8">
@@ -51,12 +52,10 @@
         </DataGrid>
 
         <DockPanel Grid.Row="4" Margin="0,16,0,0">
-            <Button x:Name="ImportButton" DockPanel.Dock="Right" Content="Importer" IsEnabled="False" Padding="20,8"
-                    Margin="12,0,0,0" Click="Import_Click" IsDefault="True"
-                    Background="{DynamicResource AccentFillColorDefaultBrush}"
-                    Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-            <Button DockPanel.Dock="Right" Content="Annuler" IsCancel="True" Padding="20,8" />
-            <TextBlock x:Name="SummaryText" VerticalAlignment="Center" TextWrapping="Wrap" />
+            <Button DockPanel.Dock="Right" Content="Annuler" IsCancel="True" MinWidth="96" />
+            <Button x:Name="ImportButton" DockPanel.Dock="Right" Content="Importer" IsEnabled="False" MinWidth="110"
+                    Click="Import_Click" IsDefault="True" />
+            <TextBlock x:Name="SummaryText" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{StaticResource TextDim}" />
         </DockPanel>
     </Grid>
 </Window>

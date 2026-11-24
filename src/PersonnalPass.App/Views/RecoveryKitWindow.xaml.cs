@@ -41,13 +41,13 @@ public partial class RecoveryKitWindow : Window
         {
             File.WriteAllText(dialog.FileName, _kit.RecoveryFileContent);
             _fileSaved = true;
-            SavedText.Text = "✓ " + Path.GetFileName(dialog.FileName);
+            SavedText.Text = "✓  " + Path.GetFileName(dialog.FileName);
             SavedText.Visibility = Visibility.Visible;
             UpdateState();
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, ex.Message, "Enregistrement impossible", MessageBoxButton.OK, MessageBoxImage.Error);
+            Dialog.Show(this, ex.Message, "Enregistrement impossible", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -65,7 +65,7 @@ public partial class RecoveryKitWindow : Window
     {
         if (!_done)
         {
-            var answer = MessageBox.Show(this,
+            var answer = Dialog.Show(this,
                 "Sans fichier ni code de récupération, un changement de processeur rendra le coffre définitivement illisible.\n\nFermer quand même ?",
                 "Kit de récupération non sauvegardé", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
             e.Cancel = answer != MessageBoxResult.Yes;

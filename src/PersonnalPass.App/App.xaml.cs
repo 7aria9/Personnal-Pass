@@ -15,6 +15,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        DarkTitleBar.Register();
         DispatcherUnhandledException += OnUnhandledException;
         ShowUnlockFlow();
     }
@@ -31,7 +32,7 @@ public partial class App : Application
         }
         catch (InvalidOperationException ex)
         {
-            MessageBox.Show(ex.Message, "Personnal-Pass", MessageBoxButton.OK, MessageBoxImage.Error);
+            Dialog.Show(ex.Message, "Personnal-Pass", MessageBoxButton.OK, MessageBoxImage.Error);
             session = null;
         }
 
@@ -54,7 +55,7 @@ public partial class App : Application
 
     private static void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show(e.Exception.Message, "Erreur inattendue", MessageBoxButton.OK, MessageBoxImage.Error);
+        Dialog.Show(e.Exception.Message, "Erreur inattendue", MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }
 }

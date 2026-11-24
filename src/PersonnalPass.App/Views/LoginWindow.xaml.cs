@@ -78,6 +78,6 @@ public partial class LoginWindow : Window
     {
         if (!IsLoaded) return;
         UnlockButton.IsEnabled = !busy;
-        Busy.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
+        Busy.Visibility = busy ? Visibility.Visible : Visibility.Hidden;
     }
 }

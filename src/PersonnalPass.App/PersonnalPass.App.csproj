@@ -11,8 +11,6 @@
     <Product>Personnal-Pass</Product>
     <!-- Permet de compiler depuis Linux/macOS (CI) ; l'exécution reste Windows uniquement. -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <!-- Le thème Fluent (Application.ThemeMode) est marqué expérimental dans WPF. -->
-    <NoWarn>$(NoWarn);WPF0001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
