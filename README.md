@@ -8,6 +8,10 @@ Gestionnaire de mots de passe personnel pour Windows, réécrit en C# (WPF, .NET
 - **Connexion** par identifiant + mot de passe maître à l'ouverture (création du coffre au premier lancement).
 - **Liste** des enregistrements (Nom, Identifiant, Mot de passe masqué) avec recherche.
 - **Ajout, modification, suppression** d'enregistrements.
+- **Import CSV** (pas d'export) : colonnes Nom, Identifiant, Mot de passe ; séparateur `;`, `,` ou tabulation
+  détecté automatiquement ; encodage UTF-8 ou Windows-1252 (ANSI, typique des exports WinDev/Excel) ;
+  ligne d'en-têtes reconnue (`Nom`/`Name`, `Login`/`Identifiant`/`Username`, `Mot de passe`/`Password`/`MDP`) ;
+  aperçu avant import, doublons ignorés, et proposition de supprimer le CSV (en clair) après l'import.
 - **Générateur** de mots de passe de 8 à 32 caractères : majuscules, minuscules, chiffres, caractères spéciaux
   (au moins un caractère de chaque famille cochée est garanti).
 - **Copie par clic droit** sur l'identifiant ou le mot de passe dans la liste (ou via les boutons de la ligne). Le mot de passe
