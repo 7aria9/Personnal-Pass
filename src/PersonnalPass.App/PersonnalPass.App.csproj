@@ -9,9 +9,14 @@
     <RootNamespace>PersonnalPass.App</RootNamespace>
     <AssemblyName>PersonnalPass</AssemblyName>
     <Product>Personnal-Pass</Product>
+    <ApplicationIcon>Assets\personnalpass.ico</ApplicationIcon>
     <!-- Permet de compiler depuis Linux/macOS (CI) ; l'exécution reste Windows uniquement. -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\personnalpass.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Management" Version="10.0.0" />
