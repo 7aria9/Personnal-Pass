@@ -10,7 +10,7 @@ public static class SecureClipboard
     private static DispatcherTimer? _timer;
     private static string? _lastCopied;
 
-    public static bool Copy(string text)
+    public static bool Copy(string text, bool autoClear = true)
     {
         if (string.IsNullOrEmpty(text)) return false;
         try
@@ -28,8 +28,14 @@ public static class SecureClipboard
             return false; // presse-papiers occupé par une autre application
         }
 
-        _lastCopied = text;
         _timer?.Stop();
+        if (!autoClear)
+        {
+            _lastCopied = null; // ce n'est plus notre secret : on ne l'effacera pas
+            return true;
+        }
+
+        _lastCopied = text;
         _timer = new DispatcherTimer { Interval = ClearDelay };
         _timer.Tick += (_, _) => ClearIfOurs();
         _timer.Start();

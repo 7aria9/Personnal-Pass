@@ -65,11 +65,12 @@
                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False"
                   HeadersVisibility="Column" GridLinesVisibility="None"
                   MouseDoubleClick="Grid_MouseDoubleClick" PreviewKeyDown="Grid_KeyDown"
+                  PreviewMouseRightButtonUp="Grid_RightClick"
                   ClipboardCopyMode="None">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="2*" SortDirection="Ascending" />
-                <DataGridTextColumn Header="Identifiant" Binding="{Binding Login}" Width="2*" />
-                <DataGridTemplateColumn Header="Mot de passe" Width="1.3*">
+                <DataGridTextColumn x:Name="LoginColumn" Header="Identifiant" Binding="{Binding Login}" Width="2*" />
+                <DataGridTemplateColumn x:Name="PasswordColumn" Header="Mot de passe" Width="1.3*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="••••••••••" VerticalAlignment="Center" />
@@ -105,6 +106,9 @@
         </StackPanel>
 
         <!-- Barre d'état -->
-        <TextBlock x:Name="StatusText" Grid.Row="2" Margin="0,10,0,0" Opacity="0.7" />
+        <DockPanel Grid.Row="2" Margin="0,10,0,0">
+            <TextBlock DockPanel.Dock="Right" Opacity="0.5" Text="Clic droit sur un identifiant ou un mot de passe pour le copier" />
+            <TextBlock x:Name="StatusText" Opacity="0.7" />
+        </DockPanel>
     </Grid>
 </Window>
