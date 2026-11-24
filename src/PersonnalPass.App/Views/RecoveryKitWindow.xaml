@@ -1,0 +1,39 @@
+<Window x:Class="PersonnalPass.App.Views.RecoveryKitWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Personnal-Pass – Kit de récupération"
+        Width="520" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False">
+    <StackPanel Margin="32,28,32,28">
+        <TextBlock Text="Kit de récupération" FontSize="22" FontWeight="SemiBold" />
+        <TextBlock Style="{StaticResource HintText}" Margin="0,6,0,0">
+            Si vous changez de processeur ou oubliez votre mot de passe, il faudra
+            <Bold>les deux éléments ci-dessous</Bold> pour rouvrir le coffre. Gardez-les séparément :
+            le fichier seul ou le code seul ne suffisent pas.
+        </TextBlock>
+
+        <TextBlock Text="1. Fichier de récupération" Style="{StaticResource FieldLabel}" Margin="0,20,0,4" />
+        <TextBlock Style="{StaticResource HintText}" Text="Enregistrez-le sur une clé USB ou un autre support que cet ordinateur." />
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+            <Button Content="Enregistrer le fichier…" Click="SaveFile_Click" Padding="14,6" />
+            <TextBlock x:Name="SavedText" VerticalAlignment="Center" Margin="12,0,0,0" Foreground="#107C10" Visibility="Collapsed" />
+        </StackPanel>
+
+        <TextBlock Text="2. Code de récupération" Style="{StaticResource FieldLabel}" Margin="0,20,0,4" />
+        <TextBlock Style="{StaticResource HintText}" Text="Notez-le sur papier. Il n'est enregistré nulle part et ne sera plus jamais affiché." />
+        <Border Margin="0,8,0,0" Padding="12" CornerRadius="6"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+            <TextBox x:Name="CodeBox" IsReadOnly="True" FontFamily="Consolas" FontSize="22"
+                     HorizontalContentAlignment="Center" BorderThickness="0" Background="Transparent" />
+        </Border>
+
+        <CheckBox x:Name="ConfirmCheck" Margin="0,18,0,0" Checked="Update_State" Unchecked="Update_State"
+                  Content="J'ai enregistré le fichier et noté le code en lieu sûr." />
+
+        <Button x:Name="DoneButton" Content="Terminer" IsDefault="True" IsEnabled="False" Margin="0,18,0,0" Padding="0,8"
+                Click="Done_Click"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
+                Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+    </StackPanel>
+</Window>

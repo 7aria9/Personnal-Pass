@@ -1,0 +1,110 @@
+<Window x:Class="PersonnalPass.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Personnal-Pass"
+        Width="980" Height="620" MinWidth="720" MinHeight="420"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="RowAction" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24,16,24,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Barre du haut -->
+        <DockPanel Margin="0,0,0,16" LastChildFill="True">
+            <TextBlock Text="Mes mots de passe" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,24,0" />
+
+            <Button x:Name="SecurityButton" DockPanel.Dock="Right" Margin="8,0,0,0" Padding="12,6" Click="Security_Click"
+                    ToolTip="Sécurité">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE72E;" Margin="0,0,8,0" />
+                    <TextBlock Text="Sécurité" />
+                </StackPanel>
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Verrouiller maintenant" Click="Lock_Click" InputGestureText="Ctrl+L" />
+                        <Separator />
+                        <MenuItem Header="Changer l'identifiant / le mot de passe maître…" Click="ChangeCredentials_Click" />
+                        <MenuItem Header="Créer un nouveau kit de récupération…" Click="NewRecoveryKit_Click" />
+                        <MenuItem Header="Sauvegarder le coffre (fichier .ppv)…" Click="Backup_Click" />
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+
+            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="14,6" Click="Add_Click"
+                    Background="{DynamicResource AccentFillColorDefaultBrush}"
+                    Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE710;" Margin="0,0,8,0" />
+                    <TextBlock Text="Ajouter" />
+                </StackPanel>
+            </Button>
+
+            <Grid MaxWidth="360" HorizontalAlignment="Right">
+                <TextBox x:Name="SearchBox" TextChanged="Search_TextChanged" Padding="32,6,8,6" MinWidth="240" />
+                <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE721;" Margin="11,0,0,0" IsHitTestVisible="False" Opacity="0.6" />
+                <TextBlock x:Name="SearchHint" Text="Rechercher…" Margin="33,0,0,0" VerticalAlignment="Center"
+                           IsHitTestVisible="False" Opacity="0.5" />
+            </Grid>
+        </DockPanel>
+
+        <!-- Liste -->
+        <DataGrid x:Name="EntriesGrid" Grid.Row="1"
+                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False"
+                  HeadersVisibility="Column" GridLinesVisibility="None"
+                  MouseDoubleClick="Grid_MouseDoubleClick" PreviewKeyDown="Grid_KeyDown"
+                  ClipboardCopyMode="None">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="2*" SortDirection="Ascending" />
+                <DataGridTextColumn Header="Identifiant" Binding="{Binding Login}" Width="2*" />
+                <DataGridTemplateColumn Header="Mot de passe" Width="1.3*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="••••••••••" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource RowAction}" Click="CopyLogin_Click" ToolTip="Copier l'identifiant">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE77B;" />
+                                </Button>
+                                <Button Style="{StaticResource RowAction}" Click="CopyPassword_Click" ToolTip="Copier le mot de passe">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8C8;" />
+                                </Button>
+                                <Button Style="{StaticResource RowAction}" Click="Edit_Click" ToolTip="Modifier">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE70F;" />
+                                </Button>
+                                <Button Style="{StaticResource RowAction}" Click="Delete_Click" ToolTip="Supprimer">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE74D;" />
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel x:Name="EmptyState" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8D7;" FontSize="48" HorizontalAlignment="Center" Opacity="0.5" />
+            <TextBlock x:Name="EmptyText" Text="Aucun enregistrement pour l'instant." Margin="0,12,0,0" HorizontalAlignment="Center" Opacity="0.7" />
+        </StackPanel>
+
+        <!-- Barre d'état -->
+        <TextBlock x:Name="StatusText" Grid.Row="2" Margin="0,10,0,0" Opacity="0.7" />
+    </Grid>
+</Window>
