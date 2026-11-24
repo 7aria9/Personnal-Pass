@@ -2,21 +2,49 @@ name: Build
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+
       - run: dotnet build -c Release
       - run: dotnet test -c Release --no-build
-      - run: dotnet publish src/PersonnalPass.App -c Release -r win-x64 --self-contained false -o publish
+
+      # Exécutable unique, autonome : aucun runtime .NET à installer.
+      - name: Publier l'exe
+        run: >
+          dotnet publish src/PersonnalPass.App -c Release -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:Version=1.0.${{ github.run_number }}
+          -o publish
+
       - uses: actions/upload-artifact@v4
         with:
           name: PersonnalPass-win-x64
-          path: publish
+          path: publish/PersonnalPass.exe
+
+      # Une release GitHub à chaque pull request fusionnée sur main.
+      - name: Créer la release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v1.0.${{ github.run_number }}"
+          cp publish/PersonnalPass.exe "PersonnalPass-$TAG.exe"
+          gh release create "$TAG" "PersonnalPass-$TAG.exe" \
+            --target "${{ github.sha }}" \
+            --title "Personnal-Pass $TAG" \
+            --generate-notes
