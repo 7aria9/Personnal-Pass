@@ -47,7 +47,7 @@ public partial class RecoveryWindow : Window
             var content = await File.ReadAllTextAsync(FileBox.Text);
             var (code, login, password, hardware) = (CodeBox.Text, LoginBox.Text.Trim(), PasswordBox.Password, App.Current.Hardware);
             Session = await Task.Run(() => VaultSession.Recover(AppPaths.VaultFile, content, code, login, password, hardware));
-            MessageBox.Show(this, "Le coffre est de nouveau accessible avec vos nouveaux identifiants sur cet ordinateur.",
+            Dialog.Show(this, "Le coffre est de nouveau accessible avec vos nouveaux identifiants sur cet ordinateur.",
                 "Récupération réussie", MessageBoxButton.OK, MessageBoxImage.Information);
             DialogResult = true;
         }

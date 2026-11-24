@@ -47,7 +47,7 @@ public partial class SetupWindow : Window
         finally
         {
             CreateButton.IsEnabled = true;
-            Busy.Visibility = Visibility.Collapsed;
+            Busy.Visibility = Visibility.Hidden;
         }
     }
 

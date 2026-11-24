@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -30,7 +31,7 @@ public partial class MainWindow : Window
         _view = CollectionViewSource.GetDefaultView(_items);
         _view.SortDescriptions.Add(new SortDescription(nameof(VaultEntry.Name), ListSortDirection.Ascending));
         _view.Filter = Matches;
-        EntriesGrid.ItemsSource = _view;
+        EntriesList.ItemsSource = _view;
 
         _idleTimer = new DispatcherTimer { Interval = IdleLock };
         _idleTimer.Tick += (_, _) => Lock(automatic: true);
@@ -52,7 +53,11 @@ public partial class MainWindow : Window
     {
         _items.Clear();
         foreach (var entry in _session.Entries) _items.Add(entry);
-        if (select is { } id) EntriesGrid.SelectedItem = _items.FirstOrDefault(e => e.Id == id);
+        if (select is { } id)
+        {
+            EntriesList.SelectedItem = _items.FirstOrDefault(e => e.Id == id);
+            if (EntriesList.SelectedItem is not null) EntriesList.ScrollIntoView(EntriesList.SelectedItem);
+        }
         UpdateState();
     }
 
@@ -77,14 +82,10 @@ public partial class MainWindow : Window
         var visible = _view.Cast<object>().Count();
         EmptyState.Visibility = visible == 0 ? Visibility.Visible : Visibility.Collapsed;
         EmptyText.Text = _items.Count == 0
-            ? "Aucun enregistrement pour l'instant. Cliquez sur « Ajouter »."
+            ? "Aucun enregistrement pour l'instant. Cliquez sur « ＋ Ajouter » ou « ⬇ Importer CSV »."
             : "Aucun résultat pour cette recherche.";
-        StatusText.Text = _items.Count switch
-        {
-            0 => "Coffre vide",
-            1 => "1 enregistrement",
-            var n => $"{n} enregistrements",
-        };
+        StatCount.Text = _items.Count.ToString();
+        StatLabel.Text = _items.Count > 1 ? "enregistrements" : "enregistrement";
     }
 
     // ------------------------------------------------------------------ actions
@@ -107,15 +108,28 @@ public partial class MainWindow : Window
 
     private void Edit_Click(object sender, RoutedEventArgs e) => Edit(EntryFrom(sender));
 
-    private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (e.OriginalSource is DependencyObject source && ItemsControl.ContainerFromElement(EntriesGrid, source) is DataGridRow row)
-            Edit(row.Item as VaultEntry);
+        // Pas d'édition si le double-clic tombe sur un des boutons de la carte.
+        if (e.OriginalSource is DependencyObject source && FindParent<ButtonBase>(source) is null
+            && ItemsControl.ContainerFromElement(EntriesList, source) is ListBoxItem item)
+            Edit(item.DataContext as VaultEntry);
     }
 
-    private void Grid_KeyDown(object sender, KeyEventArgs e)
+    private void EditSelected_Click(object sender, RoutedEventArgs e) => Edit(SelectedOrWarn());
+
+    private void DeleteSelected_Click(object sender, RoutedEventArgs e) => Delete(SelectedOrWarn());
+
+    private VaultEntry? SelectedOrWarn()
     {
-        if (EntriesGrid.SelectedItem is not VaultEntry entry) return;
+        if (EntriesList.SelectedItem is VaultEntry entry) return entry;
+        StatusText.Text = "Sélectionnez d'abord un enregistrement.";
+        return null;
+    }
+
+    private void List_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (EntriesList.SelectedItem is not VaultEntry entry) return;
         switch (e.Key)
         {
             case Key.Enter:
@@ -138,24 +152,26 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Clic droit sur une cellule « Identifiant » ou « Mot de passe » : copie directe de la valeur,
+    /// Clic droit sur l'identifiant ou sur le mot de passe d'une carte : copie directe de la valeur,
     /// comme dans l'ancienne version WinDev.
     /// </summary>
-    private void Grid_RightClick(object sender, MouseButtonEventArgs e)
+    private void List_RightClick(object sender, MouseButtonEventArgs e)
     {
-        if (e.OriginalSource is not DependencyObject source) return;
-        var cell = FindParent<DataGridCell>(source);
-        if (cell?.DataContext is not VaultEntry entry) return;
-
-        if (cell.Column == LoginColumn)
-            Copy(entry.Login, "Identifiant");
-        else if (cell.Column == PasswordColumn)
-            Copy(entry.Password, "Mot de passe");
-        else
-            return;
-
-        EntriesGrid.SelectedItem = entry;
-        e.Handled = true;
+        var target = e.OriginalSource as DependencyObject;
+        while (target is not null and not ListBoxItem)
+        {
+            if (target is FrameworkElement { Tag: string tag, DataContext: VaultEntry entry } && tag is "login" or "password")
+            {
+                if (tag == "login") Copy(entry.Login, "Identifiant");
+                else Copy(entry.Password, "Mot de passe");
+                EntriesList.SelectedItem = entry;
+                e.Handled = true;
+                return;
+            }
+            target = target is System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D
+                ? System.Windows.Media.VisualTreeHelper.GetParent(target)
+                : LogicalTreeHelper.GetParent(target);
+        }
     }
 
     private static T? FindParent<T>(DependencyObject? element) where T : DependencyObject
@@ -186,7 +202,7 @@ public partial class MainWindow : Window
     private void Delete(VaultEntry? entry)
     {
         if (entry is null) return;
-        var answer = MessageBox.Show(this, $"Supprimer définitivement « {entry.Name} » ?", "Supprimer",
+        var answer = Dialog.Show(this, $"Supprimer définitivement « {entry.Name} » ?", "Supprimer",
             MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
         if (answer != MessageBoxResult.Yes) return;
         _session.Remove(entry.Id);
@@ -230,7 +246,7 @@ public partial class MainWindow : Window
 
     private void NewRecoveryKit_Click(object sender, RoutedEventArgs e)
     {
-        var answer = MessageBox.Show(this,
+        var answer = Dialog.Show(this,
             "Un nouveau fichier et un nouveau code de récupération vont être générés.\n\n" +
             "L'ancien kit reste valable : détruisez-le si vous pensez qu'il a été compromis.\n\nContinuer ?",
             "Nouveau kit de récupération", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -254,7 +270,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, ex.Message, "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error);
+            Dialog.Show(this, ex.Message, "Sauvegarde impossible", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

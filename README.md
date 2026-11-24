@@ -1,7 +1,7 @@
 # Personnal-Pass
 
-Gestionnaire de mots de passe personnel pour Windows, réécrit en C# (WPF, .NET 10, thème Fluent)
-à partir de l'ancienne version WinDev.
+Gestionnaire de mots de passe personnel pour Windows, réécrit en C# (WPF, .NET 10)
+à partir de l'ancienne version WinDev. L'interface reprend le thème sombre rose/violet de Scan-Online.
 
 ## Fonctions
 

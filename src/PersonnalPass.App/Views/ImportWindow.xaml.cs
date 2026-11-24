@@ -1,5 +1,6 @@
 using System.Windows;
 using Microsoft.Win32;
+using PersonnalPass.App.Services;
 using PersonnalPass.Core.Import;
 using PersonnalPass.Core.Vault;
 
@@ -56,7 +57,7 @@ public partial class ImportWindow : Window
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, ex.Message, "Lecture impossible", MessageBoxButton.OK, MessageBoxImage.Error);
+            Dialog.Show(this, ex.Message, "Lecture impossible", MessageBoxButton.OK, MessageBoxImage.Error);
             _result = null;
         }
 
@@ -108,7 +109,7 @@ public partial class ImportWindow : Window
         var rows = _preview.Where(r => r.Importable).Select(r => (r.Name, r.Login, r.Password)).ToList();
         ImportedCount = _session.AddRange(rows);
 
-        var answer = MessageBox.Show(this,
+        var answer = Dialog.Show(this,
             $"{ImportedCount} enregistrement(s) importé(s) et chiffré(s) dans le coffre.\n\n" +
             "Le fichier CSV contient toujours vos mots de passe en clair. Voulez-vous le supprimer maintenant ?",
             "Import terminé", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
@@ -120,7 +121,7 @@ public partial class ImportWindow : Window
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                MessageBox.Show(this, ex.Message, "Suppression impossible", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Dialog.Show(this, ex.Message, "Suppression impossible", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
         DialogResult = true;
