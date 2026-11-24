@@ -18,6 +18,13 @@ Gestionnaire de mots de passe personnel pour Windows, réécrit en C# (WPF, .NET
 Raccourcis : `Ctrl+N` ajouter, `Ctrl+F` rechercher, `Entrée` modifier, `Suppr` supprimer,
 `Ctrl+C` copier le mot de passe, `Ctrl+B` copier l'identifiant.
 
+## Télécharger
+
+Chaque pull request fusionnée sur `main` publie automatiquement une
+[release](https://github.com/7aria9/Personnal-Pass/releases) avec `PersonnalPass-vX.Y.Z.exe` :
+un exécutable unique, sans rien à installer (le runtime .NET est inclus).
+Les pull requests ouvertes produisent aussi l'exe en artefact de la vérification « Build ».
+
 ## Compiler et lancer
 
 Prérequis : [SDK .NET 10](https://dotnet.microsoft.com/download) (ou Visual Studio 2026).
