@@ -157,6 +157,25 @@ public sealed class VaultSession : IDisposable
         return entry;
     }
 
+    /// <summary>Ajoute plusieurs enregistrements en une seule sauvegarde (import).</summary>
+    public int AddRange(IEnumerable<(string Name, string Login, string Password)> items)
+    {
+        ThrowIfDisposed();
+        var count = 0;
+        foreach (var (name, login, password) in items)
+        {
+            _entries.Add(new VaultEntry { Name = name.Trim(), Login = login, Password = password });
+            count++;
+        }
+        if (count > 0) Save();
+        return count;
+    }
+
+    /// <summary>Vrai si un enregistrement de même nom et même identifiant existe déjà (casse ignorée).</summary>
+    public bool Contains(string name, string login) => _entries.Any(e =>
+        string.Equals(e.Name.Trim(), name.Trim(), StringComparison.CurrentCultureIgnoreCase) &&
+        string.Equals(e.Login.Trim(), login.Trim(), StringComparison.CurrentCultureIgnoreCase));
+
     public void Update(VaultEntry updated)
     {
         ThrowIfDisposed();

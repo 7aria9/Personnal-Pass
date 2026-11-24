@@ -97,6 +97,14 @@ public partial class MainWindow : Window
         Reload(entry.Id);
     }
 
+    private void Import_Click(object sender, RoutedEventArgs e)
+    {
+        var count = ImportWindow.Prompt(this, _session);
+        if (count == 0) return;
+        Reload();
+        StatusText.Text = $"{count} enregistrement(s) importé(s).";
+    }
+
     private void Edit_Click(object sender, RoutedEventArgs e) => Edit(EntryFrom(sender));
 
     private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
