@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>PersonnalPass.App</RootNamespace>
+    <AssemblyName>PersonnalPass</AssemblyName>
+    <Product>Personnal-Pass</Product>
+    <!-- Permet de compiler depuis Linux/macOS (CI) ; l'exécution reste Windows uniquement. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Le thème Fluent (Application.ThemeMode) est marqué expérimental dans WPF. -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <ProjectReference Include="..\PersonnalPass.Core\PersonnalPass.Core.csproj" />
+  </ItemGroup>
+
+</Project>

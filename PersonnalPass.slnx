@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PersonnalPass.App/PersonnalPass.App.csproj" />
+    <Project Path="src/PersonnalPass.Core/PersonnalPass.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PersonnalPass.Core.Tests/PersonnalPass.Core.Tests.csproj" />
+  </Folder>
+</Solution>
